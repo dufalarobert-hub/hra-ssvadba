@@ -4,21 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0C1712">
-<title>Osem pohárikov</title>
+<title>Dve úlohy</title>
 
 <style>
   :root {
     --noc:      #0C1712;
-    --noc-2:    #13221B;
-    --noc-3:    #1B2E24;
-    --mosadz:   #C79A2E;
-    --mosadz-2: #E8C25F;
-    --papier:   #E7E0CE;
-    --papier-2: #9AA79B;
-    --liehovina:#DCEDE2;
-    --zle:      #C05A4A;
-    --dobre:    #77B98A;
-
+    --noc-2:    #16261D;
+    --mosadz:   #E8C25F;
+    --papier:   #EFE9DA;
+    --papier-2: #93A294;
     --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
     --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -26,803 +20,153 @@
 
   * { box-sizing: border-box; }
 
+  html, body { height: 100%; }
+
   body {
     margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(120% 80% at 50% -10%, var(--noc-3) 0%, var(--noc) 62%),
-      var(--noc);
+    background: var(--noc);
     color: var(--papier);
-    font-family: var(--sans);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 12px;
-    overflow-x: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .kabinet {
-    width: 100%;
-    max-width: 660px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  /* ---------- hlavička ---------- */
-
-  .hlava {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(199, 154, 46, .28);
-  }
-
-  .znacka {
     font-family: var(--serif);
-    font-size: 19px;
-    letter-spacing: .26em;
-    text-transform: uppercase;
-    color: var(--mosadz-2);
-  }
-
-  .podznacka {
-    font-size: 10px;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--papier-2);
-  }
-
-  /* ---------- HUD ---------- */
-
-  .hud {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: rgba(199, 154, 46, .22);
-    border: 1px solid rgba(199, 154, 46, .22);
-  }
-
-  .kachla {
-    background: var(--noc-2);
-    padding: 10px 12px 11px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .kachla span {
-    font-size: 9px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--papier-2);
-  }
-
-  .kachla strong {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-  }
-
-  .kachla strong.penal { color: var(--zle); }
-
-  /* posledných 8 sekúnd */
-  .kachla strong.tiesen {
-    color: var(--zle);
-    animation: tep .55s steps(2, end) infinite;
-  }
-
-  @keyframes tep { 50% { opacity: .35; } }
-
-  .gombik.maly {
-    font-size: 9.5px;
-    padding: 8px 18px;
-    letter-spacing: .18em;
-  }
-
-  /* ---------- scéna ---------- */
-
-  .ram {
-    position: relative;
+    place-items: center;
+    padding: 8vh 24px;
     overflow: hidden;
   }
 
-  .scena {
-    position: relative;
-    width: 620px;
-    height: 430px;
-    transform-origin: top left;
-    cursor: none;
-    touch-action: none;
-  }
-
-  /* fľaša */
-
-  /* fľaša sa točí okolo hrdla — hrot ostáva presne tam, kam mieriš */
-  .flasa {
-    position: absolute;
-    top: 74px;
-    left: 0;
-    width: 72px;
-    height: 176px;
-    margin-left: -36px;
-    transform-origin: 50% 0;
-    transition: transform .16s ease-out;
-    pointer-events: none;
-  }
-
-  .telo {
-    position: absolute;
-    bottom: 0;
-    width: 72px;
-    height: 116px;
-    border-radius: 7px 7px 9px 9px;
-    background: linear-gradient(100deg, #1F3B2D 0%, #35604A 34%, #57907042 60%, #1D3527 100%);
-    border: 1px solid rgba(220, 237, 226, .2);
-    overflow: hidden;
-  }
-
-  /* hladina v fľaši */
-  .obsah {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(180deg, rgba(220,237,226,.5), rgba(220,237,226,.22));
-    border-top: 1px solid rgba(236, 252, 242, .75);
-  }
-
-  .etiketa {
-    position: absolute;
-    inset: 22px 3px auto 3px;
-    height: 70px;
-    background: var(--papier);
-    border-radius: 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    box-shadow: 0 1px 0 rgba(0,0,0,.35);
-    border-top: 2px solid #23402F;
-    border-bottom: 2px solid #23402F;
-  }
-
-  .etiketa b {
-    font-family: var(--serif);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: -.01em;
-    color: #1B3325;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .etiketa i {
-    display: block;
-    width: 34px;
-    height: 1px;
-    background: #23402F;
-    opacity: .5;
-  }
-
-  .etiketa em {
-    font-family: var(--mono);
-    font-size: 7.5px;
-    letter-spacing: .06em;
-    font-style: normal;
-    color: #23402F;
-    opacity: .75;
-    white-space: nowrap;
-  }
-
-  .krk {
-    position: absolute;
-    top: 0;
-    left: 27px;
-    width: 18px;
-    height: 62px;
-    background: linear-gradient(100deg, #1F3B2D, #3E6E55 45%, #1D3527);
-    border: 1px solid rgba(220, 237, 226, .2);
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-  }
-
-  .krk::after {
-    content: "";
-    position: absolute;
-    top: -5px;
-    left: -3px;
-    right: -3px;
-    height: 9px;
-    background: var(--mosadz);
-    border-radius: 2px;
-  }
-
-  /* prúd */
-
-  .prud {
-    position: absolute;
-    width: 5px;
-    margin-left: -2.5px;
-    background: linear-gradient(180deg, rgba(236,252,242,.95), rgba(220,237,226,.55));
-    border-radius: 3px;
-    filter: blur(.4px);
-    pointer-events: none;
-    display: none;
-  }
-
-  .scena.leje .prud { display: block; }
-
-  /* tácka */
-
-  .tacka {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 42px;
-    height: 26px;
-    border-radius: 4px;
-    background: linear-gradient(180deg, #6A5327, #3C2F16);
-    box-shadow: 0 10px 26px rgba(0,0,0,.55), inset 0 1px 0 rgba(232,194,95,.4);
-  }
-
-  .kaluz {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 7px;
-    width: 0;
-    border-radius: 50%;
-    background: rgba(220, 237, 226, .3);
-    transition: width .25s ease-out;
-  }
-
-  /* poháriky */
-
-  .rad {
-    position: absolute;
-    bottom: 68px;
-    left: 0;
-    width: 100%;
-    height: 74px;
-  }
-
-  .pohar {
-    position: absolute;
-    bottom: 0;
-    width: 58px;
-    height: 74px;
-  }
-
-  .sklo {
-    position: absolute;
+  .svetlo {
+    position: fixed;
     inset: 0;
-    clip-path: polygon(9% 0, 91% 0, 82% 100%, 18% 100%);
-    background: linear-gradient(105deg, rgba(220,237,226,.13), rgba(220,237,226,.04) 42%, rgba(220,237,226,.16));
-    overflow: hidden;
-  }
-
-  .naplna {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 0;
-    background: linear-gradient(180deg, rgba(240,255,246,.92), rgba(190,225,205,.62));
-    border-top: 1.5px solid #F2FFF7;
-  }
-
-  .pohar.preliaty .naplna {
-    background: linear-gradient(180deg, rgba(192,90,74,.85), rgba(140,60,48,.6));
-    border-top-color: #E08A79;
-  }
-
-  /* ryska sedí kúsok pod okrajom — musí sa hodnotou držať s CIEL v skripte */
-  .ryska {
-    position: absolute;
-    left: -5px;
-    right: -5px;
-    bottom: 93%;
-    height: 0;
-    border-top: 2px solid rgba(119, 185, 138, .85);
-  }
-
-  .pohar.hotovy .ryska { border-top-color: rgba(119, 185, 138, 0); }
-  .pohar.preliaty .ryska { border-top-color: rgba(192, 90, 74, .85); }
-
-  .obrys {
-    position: absolute;
-    inset: 0;
-    clip-path: polygon(9% 0, 91% 0, 82% 100%, 18% 100%);
     background:
-      linear-gradient(90deg, rgba(236,252,242,.5) 0 1.5px, transparent 1.5px) 9% 0/100% 100% no-repeat;
+      radial-gradient(58% 46% at 50% 42%, rgba(232, 194, 95, .12) 0%, rgba(232, 194, 95, .045) 42%, transparent 72%),
+      radial-gradient(120% 90% at 50% 0%, #1B2E24 0%, var(--noc) 62%);
+    animation: dychanie 9s ease-in-out infinite;
     pointer-events: none;
   }
 
-  .cislo {
-    position: absolute;
-    bottom: -22px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: rgba(154, 167, 155, .55);
+  @keyframes dychanie {
+    0%, 100% { opacity: .82; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.05); }
   }
 
-  .pohar.hotovy .cislo { color: var(--dobre); }
-  .pohar.preliaty .cislo { color: var(--zle); }
+  .zrno {
+    position: fixed;
+    inset: -50%;
+    background-image: radial-gradient(rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: .5;
+    pointer-events: none;
+    animation: chvenie 7s steps(6) infinite;
+  }
 
-  /* ---------- prekrytia ---------- */
+  @keyframes chvenie {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-1%, 1%); }
+    50%  { transform: translate(1%, -1%); }
+    75%  { transform: translate(-1%, -1%); }
+    100% { transform: translate(0, 0); }
+  }
 
-  .plachta {
-    position: absolute;
-    inset: 0;
-    background: rgba(12, 23, 18, .93);
-    backdrop-filter: blur(3px);
+  .list {
+    position: relative;
+    z-index: 1;
+    width: min(620px, 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
     text-align: center;
-    padding: 28px;
-    z-index: 5;
+    gap: clamp(22px, 3.6vh, 36px);
   }
 
-  .plachta[hidden] { display: none; }
-
-  .plachta h2 {
-    font-family: var(--serif);
-    font-size: 27px;
-    font-weight: 400;
-    letter-spacing: .04em;
+  .nadpis {
+    font-size: clamp(34px, 7.6vw, 60px);
+    line-height: 1.06;
+    letter-spacing: -.015em;
+    color: var(--mosadz);
     margin: 0;
     text-wrap: balance;
   }
 
-  .plachta p {
+  .veta {
+    font-size: clamp(17px, 3.1vw, 22px);
+    line-height: 1.66;
     margin: 0;
-    max-width: 42ch;
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--papier-2);
-    text-wrap: pretty;
+    text-wrap: balance;
+    max-width: 27ch;
+    color: var(--papier);
   }
 
-  kbd {
-    font-family: var(--mono);
-    font-size: 11px;
-    background: var(--noc-3);
-    border: 1px solid rgba(199,154,46,.3);
-    border-radius: 3px;
-    padding: 2px 6px;
-    color: var(--mosadz-2);
+  .veta.tichsia { color: var(--papier-2); font-size: clamp(15px, 2.7vw, 18px); }
+
+  .caraz {
+    width: 46px;
+    height: 1px;
+    background: rgba(232, 194, 95, .45);
   }
 
-  .gombik {
+  .start {
     font-family: var(--sans);
     font-size: 11px;
-    letter-spacing: .2em;
+    letter-spacing: .24em;
     text-transform: uppercase;
     color: var(--noc);
-    background: var(--mosadz-2);
+    background: var(--mosadz);
     border: none;
     border-radius: 2px;
-    padding: 12px 26px;
+    padding: 15px 34px;
+    margin-top: 6px;
     cursor: pointer;
     transition: background .15s, transform .1s;
   }
 
-  .gombik:hover { background: #F5D680; }
-  .gombik:active { transform: translateY(1px); }
-  .gombik:focus-visible { outline: 2px solid var(--papier); outline-offset: 3px; }
+  .start:hover { background: #F7DC93; }
+  .start:active { transform: translateY(1px); }
+  .start:focus-visible { outline: 2px solid var(--papier); outline-offset: 4px; }
 
-  .gombik.tichy {
-    background: transparent;
-    color: var(--mosadz-2);
-    border: 1px solid rgba(199,154,46,.45);
+  .krok {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: pridi 1.4s cubic-bezier(.2, .7, .3, 1) forwards;
   }
 
-  .gombik.tichy:hover { background: rgba(199,154,46,.12); }
+  .k1 { animation-delay: .4s; }
+  .k2 { animation-delay: 1.7s; }
+  .k3 { animation-delay: 3.1s; }
+  .k4 { animation-delay: 4.4s; }
 
-  .rada { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-
-  .vysledok {
-    font-family: var(--mono);
-    font-size: 46px;
-    font-variant-numeric: tabular-nums;
-    color: var(--mosadz-2);
-    line-height: 1;
-  }
-
-  .rozpis {
-    font-family: var(--mono);
-    font-size: 11.5px;
-    color: var(--papier-2);
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  /* ---------- otázka ---------- */
-
-  .otazka {
-    font-family: var(--serif);
-    font-size: 25px;
-    line-height: 1.4;
-    color: var(--papier);
-    text-wrap: balance;
-    margin: 0;
-    animation: pridi .9s ease-out both;
-  }
-
-  .sepot {
-    font-size: 12px;
-    color: var(--papier-2);
-    font-style: italic;
-    animation: pridi .9s .5s ease-out both;
-  }
-
-  .zaver { animation: pridi .8s ease-out both; }
-
-  .datum {
-    font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: .22em;
-    color: var(--mosadz-2);
-  }
-
-  @keyframes pridi {
-    from { opacity: 0; transform: translateY(9px); }
-    to   { opacity: 1; transform: none; }
-  }
-
-  .pata { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  @keyframes pridi { to { opacity: 1; transform: none; } }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: .01ms !important;
-      transition-duration: .01ms !important;
-    }
+    .krok { animation: none; opacity: 1; transform: none; }
+    .svetlo, .zrno { animation: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="kabinet">
+<div class="svetlo"></div>
+<div class="zrno"></div>
 
-  <header class="hlava">
-    <div class="znacka">Osem pohárikov</div>
-    <div class="podznacka">Skúška ruky &middot; I. kolo</div>
-  </header>
+<main class="list">
+  <h1 class="nadpis krok k1">Čakajú ťa dve úlohy.</h1>
 
-  <div class="hud">
-    <div class="kachla"><span>Zostáva</span><strong id="hodiny">30.00</strong></div>
-    <div class="kachla"><span>Penalizácia</span><strong id="pokuta" class="penal">−0.0</strong></div>
-    <div class="kachla"><span>Naliate</span><strong id="pocet">0/8</strong></div>
-  </div>
+  <p class="veta krok k2">
+    Obe musíš zvládnuť. Nič sa neodpúšťa — keď to pokazíš, začínaš odznova.
+  </p>
 
-  <div class="ram" id="ram">
-    <div class="scena" id="scena">
+  <div class="caraz krok k3"></div>
 
-      <div class="prud" id="prud"></div>
+  <p class="veta tichsia krok k3">
+    A keď ich dáš obe, napíš mi.
+  </p>
 
-      <div class="flasa" id="flasa">
-        <div class="krk"></div>
-        <div class="telo">
-          <div class="obsah" id="obsah"></div>
-          <div class="etiketa">
-            <em>pravá</em>
-            <b>BOROVIČKA</b>
-            <i></i>
-            <em>40 % obj.</em>
-          </div>
-        </div>
-      </div>
-
-      <div class="rad" id="rad"></div>
-      <div class="tacka"></div>
-      <div class="kaluz" id="kaluz"></div>
-
-      <div class="plachta" id="uvod">
-        <h2>Osem pohárikov, tridsať sekúnd</h2>
-        <p>Fľaša ide za tvojou rukou. <strong>Klik alebo medzerník spustí liatie, druhý ho zastaví</strong> — nič nedrž. Ryska je <strong>tesne pod okrajom</strong>, takže musíš naliať skoro po vrch a včas prestať.</p>
-        <p>Odpočet beží od prvého naliatia. Preliatie ti z limitu strhne <strong>4 s</strong>, liatie vedľa <strong>3 s</strong> za každú sekundu. Keď vyprší čas alebo dôjde fľaša, ideš odznova.</p>
-        <p style="font-size:12px">Mierenie: myš, prst, alebo <kbd>←</kbd> <kbd>→</kbd></p>
-        <button class="gombik" id="start">Otvoriť fľašu</button>
-      </div>
-
-      <div class="plachta" id="koniec" hidden></div>
-
-    </div>
-  </div>
-
-  <div class="pata">
-    <button class="gombik tichy maly" id="restart">Začať odznova</button>
-  </div>
-</div>
+  <button class="start krok k4" id="start" type="button">Začať</button>
+</main>
 
 <script>
-(function () {
-  "use strict";
-
-  var SIRKA = 620, VYSKA = 430;
-  var POCET = 8, SIRKA_POHARA = 58, MEDZERA = 14;
-  var CIEL = 93;                 // musí sedieť s .ryska { bottom } v CSS
-  var RYCHLOST = 72;             // % pohárika za sekundu — okno na zastavenie ≈ 0,10 s
-  var LIMIT = 30;                // celý pokus musí prebehnúť do 30 s
-  var POVOLENE_PRELIATIA = 0;    // preliať sa nesmie vôbec — zdvihni, ak to má odpúšťať
-  var POKUTA_PRELIATIE = 4.0;    // sekundy strhnuté z limitu
-  var POKUTA_MIMO = 3.0;         // sekundy za sekundu liatia mimo
-  var KAPACITA = POCET * 100 + 55;
-  var TIP_Y = 74;                // y hrdla fľaše v súradniciach scény
-  var HLADINA_Y = 288;           // y hornej hrany pohárikov
-
-  var scena = document.getElementById("scena");
-  var ram = document.getElementById("ram");
-  var rad = document.getElementById("rad");
-  var flasa = document.getElementById("flasa");
-  var prud = document.getElementById("prud");
-  var obsah = document.getElementById("obsah");
-  var kaluz = document.getElementById("kaluz");
-  var elHodiny = document.getElementById("hodiny");
-  var elPokuta = document.getElementById("pokuta");
-  var elPocet = document.getElementById("pocet");
-  var uvod = document.getElementById("uvod");
-  var koniec = document.getElementById("koniec");
-
-  var zaciatokX = (SIRKA - (POCET * SIRKA_POHARA + (POCET - 1) * MEDZERA)) / 2;
-  var poharky = [];
-
-  for (var i = 0; i < POCET; i++) {
-    var lavo = zaciatokX + i * (SIRKA_POHARA + MEDZERA);
-    var el = document.createElement("div");
-    el.className = "pohar";
-    el.style.left = lavo + "px";
-    el.innerHTML =
-      '<div class="sklo"><div class="naplna"></div></div>' +
-      '<div class="obrys"></div><div class="ryska"></div>' +
-      '<div class="cislo">' + (i + 1) + "</div>";
-    rad.appendChild(el);
-    poharky.push({
-      el: el,
-      naplna: el.querySelector(".naplna"),
-      stred: lavo + SIRKA_POHARA / 2,
-      hladina: 0,
-      hotovy: false,
-      preliaty: false
-    });
-  }
-
-  var stav = "cakam";   // cakam | hram | koniec
-  var bezi = false;     // beží čas
-  var leje = false;
-  var x = SIRKA / 2;
-  var cas = 0, pokuta = 0, hotovych = 0, rozliate = 0, preliatych = 0;
-  var zostatok = KAPACITA;
-  var klaves = { vlavo: false, vpravo: false };
-  var posledny = 0;
-
-  function mierka() {
-    var s = Math.min(1, ram.clientWidth / SIRKA);
-    scena.style.transform = "scale(" + s + ")";
-    ram.style.height = VYSKA * s + "px";
-    return s;
-  }
-  var s = mierka();
-  window.addEventListener("resize", function () { s = mierka(); });
-
-  function nastavX(klientX) {
-    var r = scena.getBoundingClientRect();
-    x = Math.max(24, Math.min(SIRKA - 24, (klientX - r.left) / s));
-  }
-
-  // ---- ovládanie ----
-
-  scena.addEventListener("pointermove", function (e) {
-    if (stav !== "hram") return;
-    nastavX(e.clientX);
-  });
-
-  // liatie je prepínač: raz spustí, druhýkrát zastaví — nič sa nedrží
-  scena.addEventListener("pointerdown", function (e) {
-    if (stav !== "hram") return;
-    scena.setPointerCapture(e.pointerId);
-    nastavX(e.clientX);
-    leje = !leje;
-  });
-
-  window.addEventListener("blur", function () { leje = false; });
-
-  window.addEventListener("keydown", function (e) {
-    if (stav !== "hram") return;
-    if (e.key === "ArrowLeft") { klaves.vlavo = true; e.preventDefault(); }
-    if (e.key === "ArrowRight") { klaves.vpravo = true; e.preventDefault(); }
-    if (e.key === " ") {
-      e.preventDefault();
-      if (!e.repeat) leje = !leje;   // podržaný medzerník neprepína dokola
-    }
-  });
-
-  window.addEventListener("keyup", function (e) {
-    if (e.key === "ArrowLeft") klaves.vlavo = false;
-    if (e.key === "ArrowRight") klaves.vpravo = false;
-  });
-
-  // ---- slučka ----
-
-  function pohar_pod_hrotom() {
-    for (var i = 0; i < POCET; i++) {
-      if (Math.abs(x - poharky[i].stred) <= SIRKA_POHARA / 2) return poharky[i];
-    }
-    return null;
-  }
-
-  function krok(t) {
-    if (stav !== "hram") return;
-    var dt = Math.min(0.05, (t - posledny) / 1000) || 0;
-    posledny = t;
-
-    if (klaves.vlavo) x = Math.max(24, x - 470 * dt);
-    if (klaves.vpravo) x = Math.min(SIRKA - 24, x + 470 * dt);
-
-    var lejem = leje && zostatok > 0;
-
-    if (lejem) {
-      if (!bezi) bezi = true;
-      var mnozstvo = RYCHLOST * dt;
-      zostatok = Math.max(0, zostatok - mnozstvo);
-
-      var p = pohar_pod_hrotom();
-      if (p) {
-        p.hladina += mnozstvo;
-        if (!p.hotovy && p.hladina >= CIEL) { p.hotovy = true; hotovych++; p.el.classList.add("hotovy"); }
-        if (!p.preliaty && p.hladina > 100) {
-          p.preliaty = true;
-          p.el.classList.add("preliaty");
-          pokuta += POKUTA_PRELIATIE;
-          rozliate += 22;
-          preliatych++;
-          if (preliatych > POVOLENE_PRELIATIA) {
-            p.naplna.style.height = "100%";
-            return dokonci(false, "preliatie");
-          }
-        }
-        p.naplna.style.height = Math.min(100, p.hladina) + "%";
-      } else {
-        pokuta += POKUTA_MIMO * dt;
-        rozliate += mnozstvo;
-      }
-    }
-
-    if (bezi) cas += dt;
-
-    scena.classList.toggle("leje", lejem);
-    flasa.style.left = x + "px";
-    // fľaša sa preklopí okolo hrdla; telo padá k stredu scény, aby neušlo z obrazu
-    flasa.style.transform = lejem ? "rotate(" + (x > SIRKA / 2 ? 74 : -74) + "deg)" : "rotate(0deg)";
-    prud.style.left = x + "px";
-    prud.style.top = TIP_Y + "px";
-    prud.style.height = (HLADINA_Y - TIP_Y) + "px";
-    obsah.style.height = (zostatok / KAPACITA) * 100 + "%";
-    kaluz.style.width = Math.min(300, rozliate * 1.5) + "px";
-
-    // limit uberá čas aj penalizácie — jeden spoločný rozpočet
-    var zostava = Math.max(0, LIMIT - cas - pokuta);
-    elHodiny.textContent = zostava.toFixed(2);
-    elHodiny.classList.toggle("tiesen", bezi && zostava < 8);
-    elPokuta.textContent = "−" + pokuta.toFixed(1);
-    elPocet.textContent = hotovych + "/" + POCET;
-
-    if (hotovych === POCET) return dokonci(true);
-    if (zostava <= 0) return dokonci(false, "cas");
-    if (zostatok <= 0) return dokonci(false, "flasa");
-
-    requestAnimationFrame(krok);
-  }
-
-  // ---- obrazovky ----
-
-  function dokonci(uspech, dovod) {
-    stav = "koniec";
-    leje = false;
-    scena.classList.remove("leje");
-    elHodiny.classList.remove("tiesen");
-    var spolu = Math.min(LIMIT, cas + pokuta);
-
-    if (!uspech) {
-      var nadpis, text;
-      if (dovod === "preliatie") {
-        nadpis = "Prelial si";
-        text = "Bolo to " + hotovych + " z 8 a jeden pohárik cez okraj. " +
-               "<strong>A toto sa na svadbe neodpúšťa.</strong> Ideš odznova.";
-      } else if (dovod === "flasa") {
-        nadpis = "Fľaša je prázdna";
-        text = "Zvládol si " + hotovych + " z 8, zvyšok je na tácke. " +
-               "<strong>A toto sa na svadbe neodpúšťa.</strong>";
-      } else {
-        nadpis = "Čas vypršal";
-        text = "Zvládol si " + hotovych + " z 8 za 30 sekúnd." +
-               (pokuta > 0.05 ? " Penalizácie ti zožrali " + pokuta.toFixed(1) + " s." : "");
-      }
-      koniec.innerHTML =
-        '<h2>' + nadpis + '</h2>' +
-        '<p>' + text + '</p>' +
-        '<button class="gombik" id="znova">Skúsiť znova</button>';
-      koniec.hidden = false;
-      document.getElementById("znova").onclick = reset;
-      return;
-    }
-
-    var hodnotenie =
-      spolu < 15 ? "Ruka ako z hodinárskej dielne. Toto sa nebude opakovať." :
-      spolu < 20 ? "Slušné. Nikto by si nesťažoval." :
-      spolu < 26 ? "Prejde. Ale tácka to odniesla." :
-                   "Tesne. Ale osem plných pohárikov je osem plných pohárikov.";
-
-    koniec.innerHTML =
-      '<div class="vysledok">' + spolu.toFixed(2) + ' s</div>' +
-      '<div class="rozpis">' +
-        '<div>z limitu 30 s ostalo &nbsp;' + (LIMIT - spolu).toFixed(2) + ' s</div>' +
-        '<div>čistý čas &nbsp;&nbsp;' + cas.toFixed(2) + ' s</div>' +
-        '<div>penalizácia &nbsp;−' + pokuta.toFixed(1) + ' s</div>' +
-        '<div>ani kvapka vedľa</div>' +
-      '</div>' +
-      '<p>' + hodnotenie + ' Ale ešte si neskončil — kuchár v kuchyni potrebuje ruky.</p>' +
-      '<div class="rada">' +
-        '<button class="gombik tichy" id="znova">Ešte raz</button>' +
-        '<button class="gombik" id="dalej">Ísť do kuchyne</button>' +
-      '</div>';
-    koniec.hidden = false;
-    document.getElementById("znova").onclick = reset;
-    document.getElementById("dalej").onclick = function () {
-      window.location.href = "kolo2.html" + location.search;
-    };
-  }
-
-  function reset() {
-    poharky.forEach(function (p) {
-      p.hladina = 0; p.hotovy = false; p.preliaty = false;
-      p.el.className = "pohar";
-      p.naplna.style.height = "0%";
-    });
-    cas = 0; pokuta = 0; hotovych = 0; rozliate = 0;
-    zostatok = KAPACITA; bezi = false; leje = false;
-    x = SIRKA / 2;
-    kaluz.style.width = "0px";
-    elHodiny.textContent = LIMIT.toFixed(2);
-    elHodiny.classList.remove("tiesen");
-    elPokuta.textContent = "−0.0";
-    elPocet.textContent = "0/" + POCET;
-    koniec.hidden = true;
-    uvod.hidden = true;
-    stav = "hram";
-    posledny = performance.now();
-    requestAnimationFrame(krok);
-  }
-
-  document.getElementById("start").onclick = reset;
-  document.getElementById("restart").onclick = reset;
-
-  // testovací režim: index.html?test — preskočí kolo bez hrania
-  if (location.search.indexOf("test") > -1) {
-    var preskoc = document.createElement("button");
-    preskoc.className = "gombik tichy maly";
-    preskoc.textContent = "Preskočiť do kuchyne ▸";
-    preskoc.onclick = function () { window.location.href = "kolo2.html" + location.search; };
-    document.querySelector(".pata").appendChild(preskoc);
-  }
-})();
+  document.getElementById("start").onclick = function () {
+    window.location.href = "kolo1.html" + location.search;
+  };
 </script>
+
 </body>
 </html>
