@@ -238,6 +238,9 @@
 
   .plnka.je { transform: translate(-50%, -50%) scale(1); }
 
+  /* náhľad mäsa pred výberom porcie — len jemne stlmené, nič viac */
+  .plnka.caka { opacity: .7; }
+
   /* rolka, ktorá rastie zdola */
   .rolka {
     position: absolute;
@@ -690,15 +693,18 @@
     list.style.width = g.sirka + "px";
     list.style.height = g.vyska + "px";
     list.style.opacity = "1";
-    plnka.className = "plnka";
-    plnka.style.width = g.plnkaW + "px";
-    plnka.style.height = g.plnkaH + "px";
+    // náhľad mäsa: vidno hneď, poloprievhľadné, neutrálna veľkosť (neprezradí porciu)
+    plnka.className = "plnka je caka";
+    plnka.style.opacity = "1";
+    plnka.style.width = "80px";
+    plnka.style.height = "44px";
     rolka.style.width = g.rolka + "px";
     rolka.style.height = "0px";
     doska.classList.remove("praska");
 
     stav = "porcia";
     prepniPorcie(false);
+    povedz("Odhadni porciu podľa veľkosti listu.");
     kresli();
   }
 
@@ -712,16 +718,20 @@
     if (!btn || stav !== "porcia") return;
     if (!bezi) bezi = true;
 
+    // po výbere sa mäso ustáli na skutočnú veľkosť porcie (rovnako ako predtým)
+    var g = VELKOSTI[teraz.velkost];
+    plnka.classList.remove("caka");
+    plnka.style.width = g.plnkaW + "px";
+    plnka.style.height = g.plnkaH + "px";
+
     // zlý odhad veľkosti = zničený list, ide sa na nový
     if (btn.dataset.p !== teraz.velkost) {
-      plnka.classList.add("je");
       prepniPorcie(true);
       pokuta += POKUTA_PORCIA;
       return znic(nahodne(HLASKY.zlaPorcia));
     }
 
     povedz("Dobre odhadnuté. Teraz to pomaly zaviň.");
-    plnka.classList.add("je");
     prepniPorcie(true);
     stav = "zavijam";
   });
