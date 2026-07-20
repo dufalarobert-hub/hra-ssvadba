@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0C1712">
+<title>Kubi</title>
+
+<style>
+  :root {
+    --noc:      #0C1712;
+    --noc-2:    #16261D;
+    --mosadz:   #E8C25F;
+    --papier:   #EFE9DA;
+    --papier-2: #93A294;
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--noc);
+    color: var(--papier);
+    font-family: var(--serif);
+    display: grid;
+    place-items: center;
+    padding: 8vh 24px;
+    overflow: hidden;
+  }
+
+  /* teplé svetlo, ktoré pomaly dýcha — ako sviečka na stole */
+  .svetlo {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(58% 46% at 50% 42%, rgba(232, 194, 95, .13) 0%, rgba(232, 194, 95, .05) 42%, transparent 72%),
+      radial-gradient(120% 90% at 50% 0%, #1B2E24 0%, var(--noc) 62%);
+    animation: dychanie 9s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes dychanie {
+    0%, 100% { opacity: .82; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.05); }
+  }
+
+  /* jemné zrno, aby plocha nebola mŕtva */
+  .zrno {
+    position: fixed;
+    inset: -50%;
+    background-image: radial-gradient(rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: .5;
+    pointer-events: none;
+    animation: chvenie 7s steps(6) infinite;
+  }
+
+  @keyframes chvenie {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-1%, 1%); }
+    50%  { transform: translate(1%, -1%); }
+    75%  { transform: translate(-1%, -1%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  .list {
+    position: relative;
+    z-index: 1;
+    width: min(660px, 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(26px, 4.4vh, 44px);
+  }
+
+  .oslovenie {
+    font-size: clamp(46px, 11vw, 88px);
+    line-height: .95;
+    letter-spacing: -.015em;
+    color: var(--mosadz);
+    margin: 0;
+  }
+
+  .veta {
+    font-size: clamp(19px, 3.5vw, 27px);
+    line-height: 1.62;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 21ch;
+  }
+
+  .veta.druha { max-width: 24ch; }
+
+  .caraz {
+    width: 46px;
+    height: 1px;
+    background: rgba(232, 194, 95, .45);
+  }
+
+  .datum {
+    font-family: var(--mono);
+    font-size: clamp(11px, 2.4vw, 13px);
+    letter-spacing: .34em;
+    color: var(--mosadz);
+    text-indent: .34em;
+  }
+
+  .podpis {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--papier-2);
+    margin: 0;
+  }
+
+  /* postupné odhaľovanie */
+  .krok {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: pridi 1.5s cubic-bezier(.2, .7, .3, 1) forwards;
+  }
+
+  .k1 { animation-delay: .45s; }
+  .k2 { animation-delay: 2.1s; }
+  .k3 { animation-delay: 4.2s; }
+  .k4 { animation-delay: 6.1s; }
+  .k5 { animation-delay: 7.0s; }
+
+  @keyframes pridi {
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .krok { animation: none; opacity: 1; transform: none; }
+    .svetlo, .zrno { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="svetlo"></div>
+<div class="zrno"></div>
+
+<main class="list">
+  <h1 class="oslovenie krok k1">Kubi,</h1>
+
+  <p class="veta krok k2">
+    pri svojom najdôležitejšom dni v živote budem potrebovať mať vedľa seba dobrého parťáka.
+  </p>
+
+  <div class="caraz krok k3"></div>
+
+  <p class="veta druha krok k3">
+    A preto som ťa chcel poprosiť — či by si mohol byť mojím svedkom.
+  </p>
+
+  <div class="datum krok k4">25 &middot; 09 &middot; 2026</div>
+
+  <p class="podpis krok k5">Robert</p>
+</main>
+
+</body>
+</html>

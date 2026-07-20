@@ -888,12 +888,9 @@
     document.getElementById("dalej").onclick = zaver;
   }
 
+  // záver má vlastnú stránku, nie prekrytie nad hrncami
   function zaver() {
-    koniec.innerHTML =
-      '<p class="sepot" style="animation-delay:0s">Nalial si. Zavinul si.<br>Obe skúšky máš za sebou.</p>' +
-      '<p class="otazka">Pri svojom najdôležitejšom dni<br>budem potrebovať mať vedľa seba<br>dobrého parťáka.</p>' +
-      '<p class="otazka" style="animation-delay:1.2s">A preto som chcel vedieť,<br>či by si mohol byť mojím svedkom.</p>' +
-      '<div class="datum" style="margin-top:8px">25 &middot; 09 &middot; 2026</div>';
+    window.location.href = "zaver.html" + location.search;
   }
 
   function reset() {
@@ -920,12 +917,7 @@
     var preskoc = document.createElement("button");
     preskoc.className = "gombik tichy maly";
     preskoc.textContent = "Preskočiť na záver ▸";
-    preskoc.onclick = function () {
-      stav = "koniec";
-      uvod.hidden = true;
-      koniec.hidden = false;
-      zaver();
-    };
+    preskoc.onclick = zaver;
     document.querySelector(".pata").appendChild(preskoc);
   }
 })();
