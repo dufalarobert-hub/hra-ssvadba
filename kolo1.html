@@ -507,7 +507,7 @@
   </header>
 
   <div class="hud">
-    <div class="kachla"><span>Zostáva</span><strong id="hodiny">30.00</strong></div>
+    <div class="kachla"><span>Zostáva</span><strong id="hodiny">25.00</strong></div>
     <div class="kachla"><span>Penalizácia</span><strong id="pokuta" class="penal">−0.0</strong></div>
     <div class="kachla"><span>Naliate</span><strong id="pocet">0/8</strong></div>
   </div>
@@ -560,7 +560,7 @@
   var POCET = 8, SIRKA_POHARA = 58, MEDZERA = 14;
   var CIEL = 93;                 // musí sedieť s .ryska { bottom } v CSS
   var RYCHLOST = 72;             // % pohárika za sekundu — okno na zastavenie ≈ 0,10 s
-  var LIMIT = 30;                // celý pokus musí prebehnúť do 30 s
+  var LIMIT = 25;                // celý pokus musí prebehnúť do 25 s
   var POVOLENE_PRELIATIA = 0;    // preliať sa nesmie vôbec — zdvihni, ak to má odpúšťať
   var POKUTA_PRELIATIE = 4.0;    // sekundy strhnuté z limitu
   var POKUTA_MIMO = 3.0;         // sekundy za sekundu liatia mimo
@@ -752,7 +752,7 @@
                "<strong>A toto sa na svadbe neodpúšťa.</strong>";
       } else {
         nadpis = "Čas vypršal";
-        text = "Zvládol si " + hotovych + " z 8 za 30 sekúnd." +
+        text = "Zvládol si " + hotovych + " z 8 za 25 sekúnd." +
                (pokuta > 0.05 ? " Penalizácie ti zožrali " + pokuta.toFixed(1) + " s." : "");
       }
       koniec.innerHTML =
@@ -773,7 +773,7 @@
     koniec.innerHTML =
       '<div class="vysledok">' + spolu.toFixed(2) + ' s</div>' +
       '<div class="rozpis">' +
-        '<div>z limitu 30 s ostalo &nbsp;' + (LIMIT - spolu).toFixed(2) + ' s</div>' +
+        '<div>z limitu 25 s ostalo &nbsp;' + (LIMIT - spolu).toFixed(2) + ' s</div>' +
         '<div>čistý čas &nbsp;&nbsp;' + cas.toFixed(2) + ' s</div>' +
         '<div>penalizácia &nbsp;−' + pokuta.toFixed(1) + ' s</div>' +
         '<div>ani kvapka vedľa</div>' +
