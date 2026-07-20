@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0C1712">
+<title>Osem holubiek</title>
+
+<style>
+  :root {
+    --noc:      #0C1712;
+    --noc-2:    #13221B;
+    --noc-3:    #1B2E24;
+    --mosadz:   #C79A2E;
+    --mosadz-2: #E8C25F;
+    --papier:   #E7E0CE;
+    --papier-2: #9AA79B;
+    --kapusta:  #A8C77E;
+    --kapusta-2:#7FA95C;
+    --zle:      #C05A4A;
+    --dobre:    #77B98A;
+
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--noc-3) 0%, var(--noc) 62%),
+      var(--noc);
+    color: var(--papier);
+    font-family: var(--sans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 12px;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .kabinet {
+    width: 100%;
+    max-width: 660px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hlava {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(199, 154, 46, .28);
+  }
+
+  .znacka {
+    font-family: var(--serif);
+    font-size: 19px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--mosadz-2);
+  }
+
+  .podznacka {
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--papier-2);
+  }
+
+  .hud {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(199, 154, 46, .22);
+    border: 1px solid rgba(199, 154, 46, .22);
+  }
+
+  .kachla {
+    background: var(--noc-2);
+    padding: 10px 12px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .kachla span {
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--papier-2);
+  }
+
+  .kachla strong {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .kachla strong.tiesen {
+    color: var(--zle);
+    animation: tep .55s steps(2, end) infinite;
+  }
+
+  @keyframes tep { 50% { opacity: .35; } }
+
+  /* ---------- kuchár ---------- */
+
+  .kuchar {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 40px;
+    padding: 9px 13px;
+    background: var(--noc-2);
+    border-left: 3px solid var(--mosadz);
+  }
+
+  .kuchar b {
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--mosadz-2);
+    white-space: nowrap;
+  }
+
+  .kuchar span {
+    font-family: var(--serif);
+    font-size: 14.5px;
+    font-style: italic;
+    color: var(--papier);
+    line-height: 1.35;
+  }
+
+  /* ---------- plocha ---------- */
+
+  .plocha {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 168px;
+    gap: 14px;
+    min-height: 330px;
+  }
+
+  @media (max-width: 560px) {
+    .plocha { grid-template-columns: 1fr; }
+    .hrniec { order: -1; }
+  }
+
+  /* doska */
+
+  .doska {
+    position: relative;
+    background:
+      repeating-linear-gradient(94deg, #4A3A1E 0 13px, #52401F 13px 27px);
+    border-radius: 5px;
+    box-shadow: inset 0 0 0 1px rgba(232,194,95,.18), 0 8px 22px rgba(0,0,0,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .doska.tahá { cursor: grabbing; }
+
+  .kus {
+    position: relative;
+    width: 200px;
+    height: 190px;
+  }
+
+  /* kapustný list */
+  .list {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 150px;
+    border-radius: 52% 52% 46% 46% / 58% 58% 42% 42%;
+    background:
+      radial-gradient(70% 80% at 50% 24%, #C6DE9C 0%, #A8C77E 46%, #7FA95C 100%);
+    box-shadow: inset 0 -8px 16px rgba(60,90,40,.35);
+    transition: width .2s ease, height .2s ease;
+  }
+
+  /* žilnatina */
+  .list::before,
+  .list::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 14%;
+    width: 2px;
+    height: 74%;
+    background: rgba(245, 252, 232, .5);
+    transform-origin: top center;
+  }
+  .list::before { transform: translateX(-50%) rotate(-17deg); }
+  .list::after  { transform: translateX(-50%) rotate(17deg); }
+
+  .zila {
+    position: absolute;
+    left: 50%;
+    top: 8%;
+    width: 3px;
+    height: 84%;
+    margin-left: -1.5px;
+    background: linear-gradient(180deg, rgba(247,253,238,.85), rgba(247,253,238,.25));
+    border-radius: 2px;
+  }
+
+  /* plnka */
+  .plnka {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 96px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(60% 70% at 40% 32%, #C08A5A, #8E5F38 60%, #6E4728);
+    box-shadow: inset 0 -5px 10px rgba(50,30,15,.5);
+    transition: transform .22s cubic-bezier(.3,1.5,.5,1), width .2s, height .2s;
+  }
+
+  .plnka.je { transform: translate(-50%, -50%) scale(1); }
+
+  /* rolka, ktorá rastie zdola */
+  .rolka {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #B7D48C, #86AF62 55%, #6C9350);
+    box-shadow: inset 0 3px 6px rgba(255,255,255,.25), 0 3px 10px rgba(0,0,0,.35);
+    overflow: hidden;
+  }
+
+  .rolka::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(96deg, rgba(60,90,40,.16) 0 9px, transparent 9px 21px);
+  }
+
+  .doska.praska .list { filter: saturate(.6) brightness(1.15); }
+
+  .trhlina {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--zle);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .doska.praska .trhlina { opacity: 1; }
+
+  /* ukazovateľ tesnosti + postupu */
+
+  .meradla {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pas {
+    height: 7px;
+    background: rgba(12, 23, 18, .6);
+    border: 1px solid rgba(232, 194, 95, .25);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .pas i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--mosadz-2);
+    transition: width .06s linear;
+  }
+
+  .pas.tesnost i { background: var(--dobre); transition: none; }
+  .pas.tesnost.slabo i { background: var(--zle); }
+
+  .popis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--papier-2);
+  }
+
+  /* hrniec */
+
+  .hrniec {
+    background: var(--noc-2);
+    border: 1px solid rgba(199, 154, 46, .22);
+    border-radius: 5px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .hrniec > b {
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--papier-2);
+    font-weight: 400;
+  }
+
+  .mriezka {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 7px;
+    flex: 1;
+  }
+
+  .miesto {
+    border: 1px dashed rgba(154, 167, 155, .28);
+    border-radius: 999px;
+    min-height: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .miesto.plne {
+    border: none;
+    background: linear-gradient(180deg, #B7D48C, #86AF62 55%, #6C9350);
+    box-shadow: inset 0 2px 5px rgba(255,255,255,.28);
+    animation: hod .3s ease-out;
+  }
+
+  .miesto.plne.zla {
+    background: linear-gradient(180deg, #C89A86, #A6705C 55%, #8A5745);
+  }
+
+  @keyframes hod {
+    from { transform: translateY(-14px) scale(.8); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  /* porcie */
+
+  .porcie {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .porcia {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--papier);
+    background: var(--noc-2);
+    border: 1px solid rgba(199, 154, 46, .35);
+    border-radius: 3px;
+    padding: 13px 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    transition: background .13s, border-color .13s, transform .08s;
+  }
+
+  .porcia:hover:not(:disabled) { background: var(--noc-3); border-color: var(--mosadz-2); }
+  .porcia:active:not(:disabled) { transform: translateY(1px); }
+  .porcia:disabled { opacity: .3; cursor: default; }
+  .porcia:focus-visible { outline: 2px solid var(--mosadz-2); outline-offset: 2px; }
+
+  .porcia u {
+    display: block;
+    border-radius: 50%;
+    background: radial-gradient(60% 70% at 40% 32%, #C08A5A, #8E5F38 65%);
+  }
+
+  .porcia.m u { width: 14px; height: 10px; }
+  .porcia.s u { width: 22px; height: 14px; }
+  .porcia.v u { width: 30px; height: 18px; }
+
+  /* prekrytia */
+
+  .plachta {
+    position: absolute;
+    inset: 0;
+    background: rgba(12, 23, 18, .94);
+    backdrop-filter: blur(3px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 26px;
+    z-index: 5;
+    border-radius: 5px;
+  }
+
+  .plachta[hidden] { display: none; }
+
+  .plachta h2 {
+    font-family: var(--serif);
+    font-size: 25px;
+    font-weight: 400;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .plachta p {
+    margin: 0;
+    max-width: 44ch;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--papier-2);
+    text-wrap: pretty;
+  }
+
+  .gombik {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--noc);
+    background: var(--mosadz-2);
+    border: none;
+    border-radius: 2px;
+    padding: 12px 26px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+
+  .gombik:hover { background: #F5D680; }
+  .gombik:active { transform: translateY(1px); }
+  .gombik:focus-visible { outline: 2px solid var(--papier); outline-offset: 3px; }
+
+  .gombik.tichy {
+    background: transparent;
+    color: var(--mosadz-2);
+    border: 1px solid rgba(199,154,46,.45);
+  }
+
+  .gombik.tichy:hover { background: rgba(199,154,46,.12); }
+
+  .gombik.maly { font-size: 9.5px; padding: 8px 18px; letter-spacing: .18em; }
+
+  .rada { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  .vysledok {
+    font-family: var(--mono);
+    font-size: 44px;
+    font-variant-numeric: tabular-nums;
+    color: var(--mosadz-2);
+    line-height: 1;
+  }
+
+  .rozpis {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--papier-2);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .otazka {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--papier);
+    text-wrap: balance;
+    margin: 0;
+    animation: pridi .9s ease-out both;
+  }
+
+  .sepot {
+    font-size: 12px;
+    color: var(--papier-2);
+    font-style: italic;
+    animation: pridi .9s .4s ease-out both;
+  }
+
+  .datum {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: .22em;
+    color: var(--mosadz-2);
+  }
+
+  @keyframes pridi {
+    from { opacity: 0; transform: translateY(9px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .pata { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      transition-duration: .01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="kabinet">
+
+  <header class="hlava">
+    <div class="znacka">Osem holubiek</div>
+    <div class="podznacka">Skúška ruky &middot; II. kolo</div>
+  </header>
+
+  <div class="hud">
+    <div class="kachla"><span>Zostáva</span><strong id="hodiny">45.00</strong></div>
+    <div class="kachla"><span>Zničené</span><strong id="tesnostHud">0</strong></div>
+    <div class="kachla"><span>Hotové</span><strong id="pocet">0/8</strong></div>
+  </div>
+
+  <div class="kuchar">
+    <b>Kuchár</b>
+    <span id="hlaska">Osem holubiek. A nech to drží.</span>
+  </div>
+
+  <div class="plocha" id="plocha">
+
+    <div class="doska" id="doska">
+      <div class="kus">
+        <div class="list" id="list">
+          <div class="zila"></div>
+        </div>
+        <div class="plnka" id="plnka"></div>
+        <div class="rolka" id="rolka"></div>
+        <div class="trhlina">trhá sa!</div>
+      </div>
+
+      <div class="meradla">
+        <div class="popis"><span>Zavinuté</span><span id="postupText">0 %</span></div>
+        <div class="pas"><i id="pasPostup"></i></div>
+        <div class="popis"><span>Rýchlosť ťahu</span><span id="tesnostText">v pohode</span></div>
+        <div class="pas tesnost" id="pasTesnostObal"><i id="pasTesnost"></i></div>
+      </div>
+    </div>
+
+    <div class="hrniec">
+      <b>Hrniec</b>
+      <div class="mriezka" id="mriezka"></div>
+    </div>
+
+    <div class="plachta" id="uvod">
+      <h2>Kuchár potrebuje ruky</h2>
+      <p>Osem holubiek, <strong>45 sekúnd</strong>. Pri každej najprv odhadni <strong>porciu podľa veľkosti listu</strong>. Keď sa pomýliš, list ide do koša a začínaš s novým.</p>
+      <p>Potom <strong>podrž a ťahaj myšou nahor</strong> — ale <strong>pomaly.</strong> Keď šklbneš, kapusta sa roztrhne a je po holubke. Sleduj pásik rýchlosti; keď sčervenie, si na hrane. Keď pustíš, rolka sa pomaly rozvíja.</p>
+      <button class="gombik" id="start">Umyť si ruky</button>
+    </div>
+
+    <div class="plachta" id="koniec" hidden></div>
+  </div>
+
+  <div class="porcie" id="porcie">
+    <button class="porcia m" data-p="mala" type="button"><u></u>Malá</button>
+    <button class="porcia s" data-p="stredna" type="button"><u></u>Stredná</button>
+    <button class="porcia v" data-p="velka" type="button"><u></u>Veľká</button>
+  </div>
+
+  <div class="pata">
+    <button class="gombik tichy maly" id="restart">Začať odznova</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var POCET = 8;
+  var LIMIT = 45;              // sekúnd na celé kolo
+  var DRAHA = 220;             // px ťahu nahor na jednu holubku
+  var MAX_RYCHLOST = 380;      // px/s — nad tým sa list roztrhne; zámerne veľmi pomaly
+  var ROZVIJANIE = 11;         // % postupu, ktoré sa stratí za sekundu nečinnosti
+  var POKUTA_PORCIA = 3.0;     // zlá porcia
+  var POKUTA_TRHNUTIE = 2.0;   // roztrhnutý list — plus stratený rozrobený kus
+
+  var VELKOSTI = {
+    mala:    { sirka: 132, vyska: 112, plnkaW: 62, plnkaH: 34, rolka: 106 },
+    stredna: { sirka: 172, vyska: 144, plnkaW: 92, plnkaH: 50, rolka: 142 },
+    velka:   { sirka: 208, vyska: 172, plnkaW: 122, plnkaH: 66, rolka: 176 }
+  };
+
+  var HLASKY = {
+    zlaPorcia: [
+      "Toľko?! To ti praskne!",
+      "Chlapče, to je na holubku, nie na perinu.",
+      "Pozeraj sa na ten list, nie na mňa!",
+      "Toľko plnky? Kapusta to neunesie."
+    ],
+    trha: [
+      "Roztrhol si ju! Pomalšie, dopekla!",
+      "Kapusta nie je guma. Nový list.",
+      "Šklbeš to ako otec pri stole. Pomaly!"
+    ],
+    dobre: [
+      "Dobre. Ďalšiu.",
+      "To už je ono.",
+      "Vidíš, ide to.",
+      "Ešte sedem takých a máme to."
+    ],
+    rozpad: [
+      "To sa nám v hrnci rozsype.",
+      "Voľné. Utiahni to nabudúce.",
+      "Toto by babka neuznala."
+    ]
+  };
+
+  var doska = document.getElementById("doska");
+  var list = document.getElementById("list");
+  var plnka = document.getElementById("plnka");
+  var rolka = document.getElementById("rolka");
+  var mriezka = document.getElementById("mriezka");
+  var porcie = document.getElementById("porcie");
+  var elHodiny = document.getElementById("hodiny");
+  var elTesnostHud = document.getElementById("tesnostHud");
+  var elPocet = document.getElementById("pocet");
+  var elHlaska = document.getElementById("hlaska");
+  var pasPostup = document.getElementById("pasPostup");
+  var pasTesnost = document.getElementById("pasTesnost");
+  var pasTesnostObal = document.getElementById("pasTesnostObal");
+  var postupText = document.getElementById("postupText");
+  var tesnostText = document.getElementById("tesnostText");
+  var uvod = document.getElementById("uvod");
+  var koniec = document.getElementById("koniec");
+
+  var miesta = [];
+  for (var i = 0; i < POCET; i++) {
+    var m = document.createElement("div");
+    m.className = "miesto";
+    mriezka.appendChild(m);
+    miesta.push(m);
+  }
+
+  var stav = "cakam";      // cakam | porcia | zavijam | koniec
+  var bezi = false;
+  var cas = 0, pokuta = 0, hotovych = 0, znicenych = 0;
+  var teraz = null;        // { velkost, postup }
+  var taham = false, poslednyY = 0;
+  var posledny = 0, aktualnaRychlost = 0;
+
+  function nahodne(pole) { return pole[Math.floor(Math.random() * pole.length)]; }
+
+  function povedz(text) { elHlaska.textContent = text; }
+
+  // ---- kolo holubky ----
+
+  function novaHolubka() {
+    var kluce = ["mala", "stredna", "velka"];
+    var v = kluce[Math.floor(Math.random() * kluce.length)];
+    teraz = { velkost: v, postup: 0 };
+    predtymPostup = 0;
+    aktualnaRychlost = 0;
+
+    var g = VELKOSTI[v];
+    list.style.width = g.sirka + "px";
+    list.style.height = g.vyska + "px";
+    list.style.opacity = "1";
+    plnka.className = "plnka";
+    plnka.style.width = g.plnkaW + "px";
+    plnka.style.height = g.plnkaH + "px";
+    rolka.style.width = g.rolka + "px";
+    rolka.style.height = "0px";
+    doska.classList.remove("praska");
+
+    stav = "porcia";
+    prepniPorcie(false);
+    kresli();
+  }
+
+  function prepniPorcie(zamknut) {
+    var b = porcie.querySelectorAll(".porcia");
+    for (var i = 0; i < b.length; i++) b[i].disabled = zamknut;
+  }
+
+  porcie.addEventListener("click", function (e) {
+    var btn = e.target.closest(".porcia");
+    if (!btn || stav !== "porcia") return;
+    if (!bezi) bezi = true;
+
+    // zlý odhad veľkosti = zničený list, ide sa na nový
+    if (btn.dataset.p !== teraz.velkost) {
+      plnka.classList.add("je");
+      prepniPorcie(true);
+      pokuta += POKUTA_PORCIA;
+      return znic(nahodne(HLASKY.zlaPorcia));
+    }
+
+    povedz("Dobre odhadnuté. Teraz to pomaly zaviň.");
+    plnka.classList.add("je");
+    prepniPorcie(true);
+    stav = "zavijam";
+  });
+
+  // spoločný koniec pre zlú porciu aj roztrhnutý list
+  function znic(hlaska) {
+    stav = "znicena";
+    taham = false;
+    znicenych++;
+    povedz(hlaska);
+    doska.classList.add("praska");
+    setTimeout(function () { if (stav === "znicena") novaHolubka(); }, 430);
+  }
+
+  // ---- zavíjanie ťahom ----
+
+  doska.addEventListener("pointerdown", function (e) {
+    if (stav !== "zavijam") return;
+    doska.setPointerCapture(e.pointerId);
+    doska.classList.add("tahá");
+    taham = true;
+    poslednyY = e.clientY;
+  });
+
+  doska.addEventListener("pointermove", function (e) {
+    if (!taham || stav !== "zavijam") return;
+    var dy = poslednyY - e.clientY;      // kladné = ťah nahor
+    poslednyY = e.clientY;
+    if (dy > 0) teraz.postup = Math.min(100, teraz.postup + (dy / DRAHA) * 100);
+  });
+
+  function pusti() {
+    taham = false;
+    doska.classList.remove("tahá");
+  }
+  doska.addEventListener("pointerup", pusti);
+  doska.addEventListener("pointercancel", pusti);
+  window.addEventListener("blur", pusti);
+
+  // meranie rýchlosti ťahu robíme v slučke, aby nezáviselo od hustoty udalostí
+  var predtymPostup = 0;
+
+  function kresli() {
+    if (!teraz) return;
+    var g = VELKOSTI[teraz.velkost];
+    var p = teraz.postup / 100;
+
+    // list sa míňa zdola, rolka rastie
+    list.style.clipPath = "inset(0 0 " + (p * 100) + "% 0)";
+    plnka.style.opacity = String(Math.max(0, 1 - p * 1.6));
+    rolka.style.height = (p * 46) + "px";
+
+    pasPostup.style.width = teraz.postup + "%";
+    postupText.textContent = Math.round(teraz.postup) + " %";
+
+    // ukazovateľ rýchlosti ťahu — plný pás znamená, že to praskne
+    var pomer = Math.min(100, (aktualnaRychlost / MAX_RYCHLOST) * 100);
+    pasTesnost.style.width = pomer + "%";
+    pasTesnostObal.classList.toggle("slabo", pomer > 78);
+    tesnostText.textContent = pomer > 78 ? "pomalšie!" : "v pohode";
+  }
+
+  function krok(t) {
+    if (stav === "koniec" || stav === "cakam") return;
+    var dt = Math.min(0.05, (t - posledny) / 1000) || 0;
+    posledny = t;
+
+    if (bezi) cas += dt;
+
+    if (stav === "zavijam" && teraz) {
+      var rychlost = ((teraz.postup - predtymPostup) / 100 * DRAHA) / (dt || 1e-6);
+      predtymPostup = teraz.postup;
+      aktualnaRychlost = aktualnaRychlost * 0.6 + rychlost * 0.4;   // vyhladenie
+
+      if (taham && rychlost > MAX_RYCHLOST) {
+        pokuta += POKUTA_TRHNUTIE;
+        znic(nahodne(HLASKY.trha));
+        kresli();
+        requestAnimationFrame(krok);
+        return;
+      }
+
+      // keď nedržíš, rolka sa pomaly rozvíja
+      if (!taham && teraz.postup > 0 && teraz.postup < 100) {
+        teraz.postup = Math.max(0, teraz.postup - ROZVIJANIE * dt);
+      }
+
+      if (teraz.postup >= 100) hotovaHolubka();
+      kresli();
+    } else {
+      aktualnaRychlost = 0;
+      kresli();
+    }
+
+    var zostava = Math.max(0, LIMIT - cas - pokuta);
+    elHodiny.textContent = zostava.toFixed(2);
+    elHodiny.classList.toggle("tiesen", bezi && zostava < 10);
+    elPocet.textContent = hotovych + "/" + POCET;
+    elTesnostHud.textContent = znicenych;
+
+    if (hotovych === POCET) return dokonci(true);
+    if (zostava <= 0) return dokonci(false);
+
+    requestAnimationFrame(krok);
+  }
+
+  function hotovaHolubka() {
+    povedz(nahodne(HLASKY.dobre));
+    miesta[hotovych].className = "miesto plne";
+    hotovych++;
+
+    list.style.opacity = "0";
+    plnka.classList.remove("je");
+    predtymPostup = 0;
+    taham = false;
+
+    if (hotovych < POCET) novaHolubka();
+  }
+
+  // ---- obrazovky ----
+
+  function dokonci(uspech) {
+    stav = "koniec";
+    taham = false;
+    elHodiny.classList.remove("tiesen");
+    prepniPorcie(true);
+    doska.classList.remove("praska", "tahá");
+
+    var spolu = Math.min(LIMIT, cas + pokuta);
+
+    if (!uspech) {
+      koniec.innerHTML =
+        '<h2>Čas vypršal</h2>' +
+        '<p>Stihol si ' + hotovych + ' z 8' +
+        (znicenych ? ' a zničil ' + znicenych + '. ' : '. ') +
+        'Kuchár si zvyšok domotal sám a nepovie ti to pekne. ' +
+        '<strong>A toto sa na svadbe neodpúšťa.</strong></p>' +
+        '<button class="gombik" id="znova">Skúsiť znova</button>';
+      koniec.hidden = false;
+      document.getElementById("znova").onclick = reset;
+      return;
+    }
+
+    var hodnotenie =
+      znicenych === 0 ? "Osem holubiek, ani jedna roztrhnutá. Kuchár mlčí, a to je pochvala." :
+      znicenych <= 2 ? "Držia. Pár listov to odniesol, ale v hrnci to nikto nespozná." :
+                       "Osem ich je. O tej kope roztrhanej kapusty vedľa radšej pomlčíme.";
+
+    koniec.innerHTML =
+      '<div class="vysledok">' + spolu.toFixed(2) + ' s</div>' +
+      '<div class="rozpis">' +
+        '<div>z limitu ' + LIMIT + ' s ostalo &nbsp;' + (LIMIT - spolu).toFixed(2) + ' s</div>' +
+        '<div>čistý čas &nbsp;&nbsp;' + cas.toFixed(2) + ' s</div>' +
+        '<div>penalizácia &nbsp;−' + pokuta.toFixed(1) + ' s</div>' +
+        '<div>zničené listy &nbsp;' + znicenych + '</div>' +
+      '</div>' +
+      '<p>' + hodnotenie + '</p>' +
+      '<div class="rada">' +
+        '<button class="gombik tichy" id="znova">Ešte raz</button>' +
+        '<button class="gombik" id="dalej">Odniesť do sály</button>' +
+      '</div>';
+    koniec.hidden = false;
+    document.getElementById("znova").onclick = reset;
+    document.getElementById("dalej").onclick = zaver;
+  }
+
+  function zaver() {
+    koniec.innerHTML =
+      '<p class="sepot" style="animation-delay:0s">Nalial si. Zavinul si.<br>Obe skúšky máš za sebou.</p>' +
+      '<p class="otazka">Pri svojom najdôležitejšom dni<br>budem potrebovať mať vedľa seba<br>dobrého parťáka.</p>' +
+      '<p class="otazka" style="animation-delay:1.2s">A preto som chcel vedieť,<br>či by si mohol byť mojím svedkom.</p>' +
+      '<div class="datum" style="margin-top:8px">25 &middot; 09 &middot; 2026</div>';
+  }
+
+  function reset() {
+    cas = 0; pokuta = 0; hotovych = 0; znicenych = 0;
+    bezi = false; taham = false; predtymPostup = 0; aktualnaRychlost = 0;
+    miesta.forEach(function (m) { m.className = "miesto"; });
+    elHodiny.textContent = LIMIT.toFixed(2);
+    elHodiny.classList.remove("tiesen");
+    elTesnostHud.textContent = "0";
+    elPocet.textContent = "0/" + POCET;
+    povedz("Osem holubiek. A nech to drží.");
+    uvod.hidden = true;
+    koniec.hidden = true;
+    novaHolubka();
+    posledny = performance.now();
+    requestAnimationFrame(krok);
+  }
+
+  document.getElementById("start").onclick = reset;
+  document.getElementById("restart").onclick = reset;
+
+  // testovací režim: kolo2.html?test — skočí rovno na záverečnú vetu
+  if (location.search.indexOf("test") > -1) {
+    var preskoc = document.createElement("button");
+    preskoc.className = "gombik tichy maly";
+    preskoc.textContent = "Preskočiť na záver ▸";
+    preskoc.onclick = function () {
+      stav = "koniec";
+      uvod.hidden = true;
+      koniec.hidden = false;
+      zaver();
+    };
+    document.querySelector(".pata").appendChild(preskoc);
+  }
+})();
+</script>
+</body>
+</html>
